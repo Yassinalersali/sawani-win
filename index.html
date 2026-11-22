@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>مسابقة صواني شرقية</title>
+<meta name="description" content="مسابقة وجوائز صواني شرقية">
+<meta name="theme-color" content="#f3f6fb">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}.loading{text-align:center;padding:80px 16px;color:#5f6b80;font-family:Tajawal,sans-serif}</style>
+</head>
+<body>
+<div id="app"><div class="loading">جاري التحميل...</div></div>
+<script type="application/json" id="state">{}</script>
+<script>
+fetch('content.json?t=' + Date.now(), {cache: 'no-store'})
+  .then(function (r) { return r.ok ? r.text() : '{}'; })
+  .catch(function () { return '{}'; })
+  .then(function (txt) {
+    document.getElementById('state').textContent = txt;
+    var s = document.createElement('script');
+    s.src = 'app.js?t=' + Date.now();
+    document.body.appendChild(s);
+  });
+</script>
+</body>
+</html>

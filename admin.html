@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>تعديل المسابقة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap">
+<style>
+body{margin:0;background:#f3f6fb;color:#1c2740;font:17px/1.6 Tajawal,system-ui,Tahoma,sans-serif;padding:20px 16px 60px}
+.p{max-width:560px;margin:0 auto;background:#fff;border-radius:18px;padding:20px;border-top:6px solid #f07e06;box-shadow:0 10px 30px rgba(18,58,117,.12);display:flex;flex-direction:column;gap:14px}
+h1{margin:0;color:#1a4f9d;font-size:24px}
+label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:15px}
+small{font-weight:400;color:#5f6b80}
+input[type=text],input[type=tel],input[type=password],input[type=datetime-local],textarea{font:16px Tajawal,sans-serif;padding:10px 12px;border:1px solid #c9d4e6;border-radius:10px;width:100%;box-sizing:border-box;background:#fff;color:#1c2740}
+textarea{min-height:80px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.ck{flex-direction:row;align-items:center;gap:10px}
+button{border:0;border-radius:12px;padding:12px 20px;font:700 17px Tajawal,sans-serif;background:#1a4f9d;color:#fff;cursor:pointer}
+button.ghost{background:#e8eef8;color:#1c2740;font-size:14px;padding:8px 12px}
+button:disabled{opacity:.6}
+.ok{color:#1f7a4d;font-weight:700}.err{color:#c2410c;font-weight:700}
+img.t{width:120px;border-radius:8px}
+a{color:#1a4f9d}
+[hidden]{display:none!important}
+</style></head><body><div class="p">
+<div class="row"><h1>تعديل المسابقة</h1><a href="./" target="_blank">شوف الصفحة</a></div>
+
+<form id="login" hidden>
+  <label>مفتاح الدخول <small>بتدخله مرة وحدة على هذا الجهاز</small><input type="password" id="token" autocomplete="off"></label>
+  <button>دخول</button>
+</form>
+
+<form id="edit" hidden style="display:flex;flex-direction:column;gap:14px">
+  <label class="ck"><input type="checkbox" id="active"> في مسابقة شغّالة الآن</label>
+  <label>عنوان المسابقة<input type="text" id="title"></label>
+  <label>شارة صغيرة فوق العنوان <small>مثال: مسابقة رمضان</small><input type="text" id="badge"></label>
+  <label>الجائزة<input type="text" id="prize"></label>
+  <label>وصف قصير<textarea id="description"></textarea></label>
+  <label>طريقة المشاركة <small>كل خطوة في سطر</small><textarea id="steps"></textarea></label>
+  <label>تاريخ ووقت الانتهاء <small>اتركه فاضي إذا ما في موعد</small><input type="datetime-local" id="endDate"></label>
+  <label>رقم واتساب لاستقبال المشاركات <small>مع رمز الدولة، مثال: 9665xxxxxxxx</small><input type="tel" id="whatsapp"></label>
+  <label>نص زر المشاركة<input type="text" id="ctaText"></label>
+  <label>الرسالة الجاهزة اللي توصلك<input type="text" id="ctaMessage"></label>
+  <label>الشروط<textarea id="terms"></textarea></label>
+  <label>اسم المحل<input type="text" id="storeName"></label>
+  <label>صورة الجائزة
+    <span class="row" style="justify-content:flex-start"><img class="t" id="thumb" alt="" hidden><button type="button" class="ghost" id="rmimg" hidden>إزالة الصورة</button></span>
+    <input type="file" id="image" accept="image/*">
+  </label>
+  <button id="save">حفظ ونشر</button>
+  <div id="st"></div>
+  <button type="button" class="ghost" id="logout" style="align-self:flex-start">تسجيل خروج من هذا الجهاز</button>
+</form>
+<div id="st0"></div>
+</div>
+<script>
+(function(){
+var OWNER='Yassinalersali', REPO='sawani-win', BRANCH='main';
+var API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
+var FIELDS=['title','badge','prize','description','steps','endDate','whatsapp','ctaText','ctaMessage','terms','storeName'];
+var token='', sha=null, data={}, newImage=null;
+function $(id){return document.getElementById(id);}
+function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
+function load(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function b64enc(str){return btoa(unescape(encodeURIComponent(str)));}
+function b64dec(b){return decodeURIComponent(escape(atob(b.replace(/\n/g,''))));}
+function gh(path,opt){opt=opt||{};opt.headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json'};
+  return fetch(API+path+(opt.method?'':'?ref='+BRANCH+'&t='+Date.now()),opt).then(function(r){return r.json().then(function(j){if(!r.ok){var e=new Error(j.message||r.status);e.status=r.status;throw e;}return j;});});}
+function msg(el,cls,t){el.className=cls;el.textContent=t;}
+function showLogin(err){$('login').hidden=false;$('edit').hidden=true;if(err)msg($('st0'),'err',err);}
+function start(){
+  msg($('st0'),'','جاري التحميل...');
+  gh('content.json').then(function(j){
+    sha=j.sha;data=JSON.parse(b64dec(j.content));
+    $('login').hidden=true;$('edit').hidden=false;msg($('st0'),'','');
+    $('active').checked=!!data.active;
+    FIELDS.forEach(function(k){$(k).value=data[k]||'';});
+    if(data.image){$('thumb').src=data.image.indexOf('data:')===0?data.image:data.image;$('thumb').hidden=false;$('rmimg').hidden=false;}
+  }).catch(function(e){
+    store('gh_token',null);
+    showLogin(e.status===401||e.status===403||e.status===404?'المفتاح غلط أو ما عنده صلاحية على الموقع.':'ما قدرنا نتصل. تأكد من الإنترنت وجرّب مرة ثانية.');
+  });
+}
+function shrink(file){return new Promise(function(res,rej){var r=new FileReader();r.onerror=rej;r.onload=function(){var img=new Image();img.onerror=rej;img.onload=function(){
+  var max=1200,k=Math.min(1,max/Math.max(img.width,img.height));var c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.82));};img.src=r.result;};r.readAsDataURL(file);});}
+$('login').onsubmit=function(e){e.preventDefault();token=$('token').value.trim();if(!token)return;store('gh_token',token);start();};
+$('logout').onclick=function(){store('gh_token',null);token='';location.reload();};
+$('rmimg').onclick=function(){data.image='';newImage=null;$('thumb').hidden=true;$('rmimg').hidden=true;$('image').value='';};
+$('image').onchange=function(){var f=$('image').files[0];if(!f)return;shrink(f).then(function(d){newImage=d;$('thumb').src=d;$('thumb').hidden=false;$('rmimg').hidden=false;}).catch(function(){msg($('st'),'err','ما قدرنا نقرأ الصورة، جرّب صورة ثانية.');});};
+$('edit').onsubmit=function(e){
+  e.preventDefault();var btn=$('save');btn.disabled=true;msg($('st'),'','جاري النشر...');
+  FIELDS.forEach(function(k){data[k]=$(k).value.trim();});data.active=$('active').checked;
+  var p=Promise.resolve();
+  if(newImage){var name='uploads/prize-'+Date.now()+'.jpg';
+    p=gh(name,{method:'PUT',body:JSON.stringify({message:'صورة مسابقة جديدة',content:newImage.split(',')[1],branch:BRANCH})}).then(function(){data.image=name;newImage=null;});}
+  p.then(function(){return gh('content.json',{method:'PUT',body:JSON.stringify({message:'تحديث المسابقة',content:b64enc(JSON.stringify(data,null,2)),sha:sha,branch:BRANCH})});})
+  .then(function(j){sha=j.content.sha;btn.disabled=false;msg($('st'),'ok','تم الحفظ. التغيير بيظهر للزبائن خلال دقيقة أو دقيقتين.');})
+  .catch(function(e){btn.disabled=false;msg($('st'),'err',e.status===409?'في تعديل أحدث، حدّث الصفحة وجرّب مرة ثانية.':'صار خطأ أثناء النشر: '+e.message);});
+};
+token=load('gh_token');
+if(token)start();else showLogin();
+})();
+</script>
+</body></html>
