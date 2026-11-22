@@ -21,8 +21,8 @@ function render(){
   var card=el('article','card');
   if(!state.active){
     var em=el('div','empty');
-    em.appendChild(el('h1',null,'لا توجد مسابقة حاليًا'));
-    em.appendChild(el('p','desc','ترقّبوا مسابقتنا الجاية قريبًا. امسح الباركود مرة ثانية لاحقًا.'));
+    em.appendChild(el('h1',null,state.comingTitle||'قريبًا'));
+    em.appendChild(el('p','desc',state.comingText||'انتظرونا مع أجمل المفاجآت والمسابقات'));
     card.appendChild(em);
   }else{
     if(state.image){var im=el('img','hero-img');im.src=state.image;im.alt=state.title||'';card.appendChild(im);}

@@ -29,6 +29,8 @@ a{color:#1a4f9d}
 
 <form id="edit" hidden style="display:flex;flex-direction:column;gap:14px">
   <label class="ck"><input type="checkbox" id="active"> في مسابقة شغّالة الآن</label>
+  <label>العنوان لما ما في مسابقة<input type="text" id="comingTitle"></label>
+  <label>النص لما ما في مسابقة<input type="text" id="comingText"></label>
   <label>عنوان المسابقة<input type="text" id="title"></label>
   <label>شارة صغيرة فوق العنوان <small>مثال: مسابقة رمضان</small><input type="text" id="badge"></label>
   <label>الجائزة<input type="text" id="prize"></label>
@@ -54,7 +56,7 @@ a{color:#1a4f9d}
 (function(){
 var OWNER='Yassinalersali', REPO='sawani-win', BRANCH='main';
 var API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
-var FIELDS=['title','badge','prize','description','steps','endDate','whatsapp','ctaText','ctaMessage','terms','storeName'];
+var FIELDS=['comingTitle','comingText','title','badge','prize','description','steps','endDate','whatsapp','ctaText','ctaMessage','terms','storeName'];
 var token='', sha=null, data={}, newImage=null;
 function $(id){return document.getElementById(id);}
 function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
