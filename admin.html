@@ -33,7 +33,10 @@ a{color:#1a4f9d}
   <label>النص لما ما في مسابقة<input type="text" id="comingText"></label>
   <label>عنوان المسابقة<input type="text" id="title"></label>
   <label>شارة صغيرة فوق العنوان <small>مثال: مسابقة رمضان</small><input type="text" id="badge"></label>
+  <label>عنوان صندوق الجائزة <small>مثال: جائزتك الفورية</small><input type="text" id="prizeLabel"></label>
   <label>الجائزة<input type="text" id="prize"></label>
+  <label>عنوان الجائزة الإضافية <small>اختياري</small><input type="text" id="bonusLabel"></label>
+  <label>الجائزة الإضافية <small>اتركها فاضية إذا ما في</small><input type="text" id="bonus"></label>
   <label>وصف قصير<textarea id="description"></textarea></label>
   <label>طريقة المشاركة <small>كل خطوة في سطر</small><textarea id="steps"></textarea></label>
   <label>تاريخ ووقت الانتهاء <small>اتركه فاضي إذا ما في موعد</small><input type="datetime-local" id="endDate"></label>
@@ -56,7 +59,7 @@ a{color:#1a4f9d}
 (function(){
 var OWNER='Yassinalersali', REPO='sawani-win', BRANCH='main';
 var API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
-var FIELDS=['comingTitle','comingText','title','badge','prize','description','steps','endDate','whatsapp','ctaText','ctaMessage','terms','storeName'];
+var FIELDS=['comingTitle','comingText','title','badge','prizeLabel','prize','bonusLabel','bonus','description','steps','endDate','whatsapp','ctaText','ctaMessage','terms','storeName'];
 var token='', sha=null, data={}, newImage=null;
 function $(id){return document.getElementById(id);}
 function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}

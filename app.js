@@ -30,7 +30,10 @@ function render(){
     if(state.badge)inner.appendChild(el('span','badge',state.badge));
     inner.appendChild(el('h1',null,state.title||''));
     if(state.prize){
-      var pz=el('div','prize');pz.innerHTML=giftSvg;var t=el('div');t.appendChild(el('div','lbl','الجائزة'));t.appendChild(el('div','val',state.prize));pz.appendChild(t);inner.appendChild(pz);
+      var pz=el('div','prize');pz.innerHTML=giftSvg;var t=el('div');t.appendChild(el('div','lbl',state.prizeLabel||'الجائزة'));t.appendChild(el('div','val',state.prize));pz.appendChild(t);inner.appendChild(pz);
+    }
+    if(state.bonus){
+      var bz=el('div','prize bonus');bz.innerHTML=giftSvg.replace('#f07e06','#1a4f9d');var bt=el('div');bt.appendChild(el('div','lbl',state.bonusLabel||'جائزة أكبر'));bt.appendChild(el('div','val',state.bonus));bz.appendChild(bt);inner.appendChild(bz);
     }
     if(state.description)inner.appendChild(el('p','desc',state.description));
     var steps=String(state.steps||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
